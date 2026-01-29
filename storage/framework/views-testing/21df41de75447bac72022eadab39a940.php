@@ -1,0 +1,1 @@
+@livewire($name, $params)<?php /**PATH /home/kevin/Projects/waav2/storage/framework/views-testing/a168b0ebcff266df6b662fc4b6d06e88.blade.php ENDPATH**/ ?>
