@@ -108,3 +108,15 @@
 - Added accommodation setup wizard for partners to create an accommodation with a starter unit, rate plan, pricing window, and optional availability range.
 - Linked the accommodation setup page from the catalog products screen.
 - Added PartnerPagesTest coverage for the new accommodation setup flow.
+
+## 2026-01-29 - Plan: Separate events vs accommodations
+- Goal: eliminate mixed product logic by splitting models, routes, Livewire pages, and availability/booking flows per domain.
+- Backend: introduce distinct event and accommodation product models (or dedicated subclasses) with discrete migrations, policies, and form requests; split partner/admin/front route files to `/events` and `/accommodations`; add mappers to keep legacy `type`-based endpoints working during migration.
+- Availability/holds/bookings: keep shared booking envelope but use typed item DTOs; separate availability services (time-slot vs date-range) and validation rules; migrate idempotency + ledgers accordingly.
+- Livewire + Flux UI: create parallel pages/forms/tables for each domain; reuse shared atoms (pricing, policies, locations) via shared components; ensure Tailwind v4 utility usage and Flux Pro form/table components.
+- Data migration: backfill existing mixed `products` records into dedicated tables and establish feature flags to roll out per partner; add tests to cover both pathways until legacy endpoints are removed.
+
+## 2026-01-29 - Migration scaffolding for split
+- Added new tables for `event_products`, `accommodation_products`, typed booking items, and typed holds (migrations only).
+- Registered per-partner Pennant feature flag `partner-event-accommodation-split`.
+- Added placeholder route groups under admin/partner/front APIs guarded by the feature flag to stage new namespaces without breaking existing flows.

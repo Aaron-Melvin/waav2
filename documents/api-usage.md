@@ -3,6 +3,21 @@
 ## Base URL
 - `/api/v1`
 
+## Upcoming change: split events vs accommodations
+- We are decoupling the two product types into separate resources and endpoints to reduce conditional logic and mixed schemas.
+- New namespaces to introduce:
+  - Admin: `/api/v1/admin/events/*` and `/api/v1/admin/accommodations/*`
+  - Partner: `/api/v1/partner/events/*` and `/api/v1/partner/accommodations/*`
+  - Front: `/api/v1/front/events/*` (time-slot availability) and `/api/v1/front/accommodations/*` (date-range availability)
+- Feature flag: `partner-event-accommodation-split` (per-partner) gates new namespaces during rollout.
+- Bookings and holds will keep a shared envelope but use distinct item payloads:
+  - Event item: `{ "item_type": "event", "product_id": "uuid", "event_id": "uuid", "quantity": 2 }`
+  - Accommodation item: `{ "item_type": "accommodation", "product_id": "uuid", "unit_id": "uuid", "starts_on": "2026-02-10", "ends_on": "2026-02-12", "quantity": 1 }`
+- Availability search will branch by type:
+  - Events: `/front/events/availability` (date + time window; capacity based)
+  - Accommodations: `/front/accommodations/availability` (date-range; inventory/overbooking rules)
+- Partner catalog create/update flows will be split to avoid `type` switches in a single product endpoint. Existing `type` field will be deprecated once the split endpoints are live. Please keep backward compatibility during migration.
+
 ## Authentication
 
 ### Partner + Front APIs (API key)
