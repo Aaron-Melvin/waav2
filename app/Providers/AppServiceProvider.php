@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\Partner;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Laravel\Pennant\Feature;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->configureFeatures();
     }
 
     protected function configureDefaults(): void
@@ -43,5 +46,12 @@ class AppServiceProvider extends ServiceProvider
                 ->uncompromised()
             : null
         );
+    }
+
+    protected function configureFeatures(): void
+    {
+        Feature::define('partner-event-accommodation-split', function (?Partner $partner): bool {
+            return false;
+        });
     }
 }
