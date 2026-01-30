@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\PartnerController;
 use App\Http\Controllers\Api\Admin\PaymentRefundController;
 use App\Http\Controllers\Api\Admin\TaxController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Pennant\Middleware\EnsureFeaturesAreActive;
 
 Route::prefix('v1/admin')
     ->middleware(['auth', 'role:super-admin', 'idempotency'])
@@ -41,4 +42,18 @@ Route::prefix('v1/admin')
             ->name('cancellation-policies.show');
         Route::patch('cancellation-policies/{cancellationPolicy}', [CancellationPolicyController::class, 'update'])
             ->name('cancellation-policies.update');
+
+        Route::prefix('events')
+            ->middleware(EnsureFeaturesAreActive::using('partner-event-accommodation-split'))
+            ->name('events.')
+            ->group(function (): void {
+                //
+            });
+
+        Route::prefix('accommodations')
+            ->middleware(EnsureFeaturesAreActive::using('partner-event-accommodation-split'))
+            ->name('accommodations.')
+            ->group(function (): void {
+                //
+            });
     });

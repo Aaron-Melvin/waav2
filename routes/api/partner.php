@@ -4,12 +4,12 @@ use App\Http\Controllers\Api\Partner\ApiClientController;
 use App\Http\Controllers\Api\Partner\BookingController;
 use App\Http\Controllers\Api\Partner\CalendarSyncAccountController;
 use App\Http\Controllers\Api\Partner\CancellationPolicyController;
+use App\Http\Controllers\Api\Partner\CouponController;
+use App\Http\Controllers\Api\Partner\EligibilityRuleController;
 use App\Http\Controllers\Api\Partner\EventBlackoutController;
 use App\Http\Controllers\Api\Partner\EventController;
 use App\Http\Controllers\Api\Partner\EventOverrideController;
 use App\Http\Controllers\Api\Partner\EventSeriesController;
-use App\Http\Controllers\Api\Partner\EligibilityRuleController;
-use App\Http\Controllers\Api\Partner\CouponController;
 use App\Http\Controllers\Api\Partner\FeeController;
 use App\Http\Controllers\Api\Partner\IcalFeedController;
 use App\Http\Controllers\Api\Partner\InvoiceController;
@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\Partner\UnitController;
 use App\Http\Controllers\Api\Partner\WebhookController;
 use App\Http\Controllers\Api\Partner\WebhookDeliveryController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Pennant\Middleware\EnsureFeaturesAreActive;
 
 Route::prefix('v1/partner')
     ->middleware(['api.client', 'require.partner', 'idempotency'])
@@ -155,4 +156,18 @@ Route::prefix('v1/partner')
             ->name('calendar-sync-accounts.index');
         Route::post('calendar-sync-accounts', [CalendarSyncAccountController::class, 'store'])
             ->name('calendar-sync-accounts.store');
+
+        Route::prefix('events')
+            ->middleware(EnsureFeaturesAreActive::using('partner-event-accommodation-split'))
+            ->name('events.')
+            ->group(function (): void {
+                //
+            });
+
+        Route::prefix('accommodations')
+            ->middleware(EnsureFeaturesAreActive::using('partner-event-accommodation-split'))
+            ->name('accommodations.')
+            ->group(function (): void {
+                //
+            });
     });
